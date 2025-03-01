@@ -1,0 +1,304 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"sprinkler.open": {
+			"animation_length": 1,
+			"bones": {
+				"base1": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, -45, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, -1, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"base2": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, -45, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, -0.5, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"arm1": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, -50]
+						},
+						"1.0": {
+							"vector": [0, 0, -20]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [-0.4, -0.6, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"arm2": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 50]
+						},
+						"1.0": {
+							"vector": [0, 0, 20]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0.4, -0.6, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"arm3": {
+					"rotation": {
+						"0.0": {
+							"vector": [50, 0, 0]
+						},
+						"1.0": {
+							"vector": [20, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, -0.6, -0.4]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"arm4": {
+					"rotation": {
+						"0.0": {
+							"vector": [-50, 0, 0]
+						},
+						"1.0": {
+							"vector": [-20, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, -0.6, 0.4]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"sprinkler.close": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 1,
+			"bones": {
+				"base1": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, -45, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, -1, 0]
+						}
+					}
+				},
+				"base2": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, -45, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, -0.5, 0]
+						}
+					}
+				},
+				"arm1": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, -20]
+						},
+						"1.0": {
+							"vector": [0, 0, -50]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [-0.4, -0.6, 0]
+						}
+					}
+				},
+				"arm2": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 20]
+						},
+						"1.0": {
+							"vector": [0, 0, 50]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0.4, -0.6, 0]
+						}
+					}
+				},
+				"arm3": {
+					"rotation": {
+						"0.0": {
+							"vector": [20, 0, 0]
+						},
+						"1.0": {
+							"vector": [50, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, -0.6, -0.4]
+						}
+					}
+				},
+				"arm4": {
+					"rotation": {
+						"0.0": {
+							"vector": [-20, 0, 0]
+						},
+						"1.0": {
+							"vector": [-50, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, -0.6, 0.4]
+						}
+					}
+				}
+			}
+		},
+		"sprinkler.work": {
+			"loop": true,
+			"timeline": {
+				"0.5": [
+					{
+						"trigger": "minecraft:custom_particle_event"
+					}
+				]
+			},
+			"animation_length": 1,
+			"bones": {
+				"base1": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"base2": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"head": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 360, 0]
+						}
+					}
+				},
+				"arm1": {
+					"rotation": {
+						"vector": [0, 0, -20]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"arm2": {
+					"rotation": {
+						"vector": [0, 0, 20]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"arm3": {
+					"rotation": {
+						"vector": [20, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"arm4": {
+					"rotation": {
+						"vector": [-20, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}
