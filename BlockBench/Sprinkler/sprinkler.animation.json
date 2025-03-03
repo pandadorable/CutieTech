@@ -15,7 +15,7 @@
 					},
 					"position": {
 						"0.0": {
-							"vector": [0, -1, 0]
+							"vector": [0, -1.1, 0]
 						},
 						"1.0": {
 							"vector": [0, 0, 0]
@@ -33,7 +33,7 @@
 					},
 					"position": {
 						"0.0": {
-							"vector": [0, -0.5, 0]
+							"vector": [0, -0.4, 0]
 						},
 						"1.0": {
 							"vector": [0, 0, 0]
@@ -124,7 +124,7 @@
 							"vector": [0, 0, 0]
 						},
 						"1.0": {
-							"vector": [0, -45, 0]
+							"vector": [0, 45, 0]
 						}
 					},
 					"position": {
@@ -132,7 +132,7 @@
 							"vector": [0, 0, 0]
 						},
 						"1.0": {
-							"vector": [0, -1, 0]
+							"vector": [0, -1.1, 0]
 						}
 					}
 				},
@@ -142,7 +142,7 @@
 							"vector": [0, 0, 0]
 						},
 						"1.0": {
-							"vector": [0, -45, 0]
+							"vector": [0, 45, 0]
 						}
 					},
 					"position": {
@@ -150,7 +150,7 @@
 							"vector": [0, 0, 0]
 						},
 						"1.0": {
-							"vector": [0, -0.5, 0]
+							"vector": [0, -0.4, 0]
 						}
 					}
 				},
@@ -230,28 +230,8 @@
 		},
 		"sprinkler.work": {
 			"loop": true,
-			"timeline": {
-
-				"1": "sprinkler_particles"
-			},
 			"animation_length": 1,
 			"bones": {
-				"base1": {
-					"rotation": {
-						"vector": [0, 0, 0]
-					},
-					"position": {
-						"vector": [0, 0, 0]
-					}
-				},
-				"base2": {
-					"rotation": {
-						"vector": [0, 0, 0]
-					},
-					"position": {
-						"vector": [0, 0, 0]
-					}
-				},
 				"head": {
 					"rotation": {
 						"0.0": {
@@ -294,6 +274,9 @@
 						"vector": [0, 0, 0]
 					}
 				}
+			},
+			"timeline": {
+				"0.0": "sprinkler_event;"
 			}
 		}
 	},

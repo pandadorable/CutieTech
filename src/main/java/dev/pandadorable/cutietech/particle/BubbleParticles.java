@@ -7,18 +7,22 @@ import org.jetbrains.annotations.Nullable;
 
 public class BubbleParticles extends TextureSheetParticle {
     protected BubbleParticles(ClientLevel level, double x, double y, double z, SpriteSet spriteSet,
-                              double xSpeed, double ySpeed, double zSpeed) {
-        super(level, x, y, z, xSpeed, ySpeed, zSpeed);
+                              double sX, double sY, double sZ) {
+        super(level, x, y, z);
 
-        //this.gravity = 9.81f;
-
-        this.lifetime = 40;
         this.setSpriteFromAge(spriteSet);
+        this.setParticleSpeed(sX,sY,sZ);
+
+        float g = 0.981f;
+        this.lifetime = 20;
+        this.gravity = g;
+
+        this.quadSize = 0.05f;
     }
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ParticleRenderType.CUSTOM;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public static class Provider implements ParticleProvider<SimpleParticleType>{

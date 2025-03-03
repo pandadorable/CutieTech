@@ -178,7 +178,7 @@
 	"groups": [
 		{
 			"name": "base",
-			"origin": [8, 0, 8],
+			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [
 				0,

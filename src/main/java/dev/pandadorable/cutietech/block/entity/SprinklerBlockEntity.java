@@ -1,13 +1,12 @@
 package dev.pandadorable.cutietech.block.entity;
 
+import dev.pandadorable.cutietech.ClientUtils;
 import dev.pandadorable.cutietech.block.custom.SprinklerBlock;
 import dev.pandadorable.cutietech.particle.CTParticles;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -15,6 +14,9 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.concurrent.TimeUnit;
+
 
 public class SprinklerBlockEntity extends BlockEntity implements GeoBlockEntity {
     private AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -44,21 +46,11 @@ public class SprinklerBlockEntity extends BlockEntity implements GeoBlockEntity 
             return PlayState.STOP;
         });
 
+        controller.setCustomInstructionKeyframeHandler(state -> {
+            spawnParticles();
+        });
+
         controllers.add(controller);
-    }
-
-    @Override
-    public void triggerAnim(@Nullable String controllerName, String animName) {
-        GeoBlockEntity.super.triggerAnim(controllerName, animName);
-        System.out.println("a "+controllerName+" b "+animName);
-//        if("sprinkler_particles".equals(animName)){
-//            this.spawnParticles();
-//        }
-    }
-
-    @Override
-    public boolean triggerEvent(int id, int type) {
-        return super.triggerEvent(id, type);
     }
 
     @Override
@@ -68,22 +60,297 @@ public class SprinklerBlockEntity extends BlockEntity implements GeoBlockEntity 
 
     // 🎇 Génération des particules en fonction de l'animation
     public void spawnParticles() {
-        System.out.println("OwO");
         if (level instanceof ClientLevel clientLevel) {
-            System.out.println("UwU");
-            for (int i = 0; i < 10; i++) {
-                double angle = Math.toRadians(i * 36); // Dispersion circulaire
-                double xOffset = Math.cos(angle) * 0.5;
-                double zOffset = Math.sin(angle) * 0.5;
-                double yOffset = 0.2;
+            switch(this.getBlockState().getValue(SprinklerBlock.FACING)) {
+                case UP :
+                    for(int i = 0 ; i < 21 ; i++){
 
-                clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
-                        worldPosition.getX() + 0.5 + xOffset,
-                        worldPosition.getY() + yOffset,
-                        worldPosition.getZ() + 0.5 + zOffset,
-                        0, 0, 0);
+                        double finalXpos = 0.5;
+                        double finalYpos = 0.3;
+                        double finalZpos = 0.5;
+
+                        double finalZOffset = i/100f; // go from 0 to 0.2
+                        double finalXOffset = Math.sqrt((20.1*20.1)-(i*i))/100f; // go from 0.2 to 0
+
+
+                        ClientUtils.runLater(() -> {
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalXOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos + finalZOffset,
+                                    finalXOffset*1.25f,
+                                    0.4f,
+                                    finalZOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalXOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos - finalZOffset,
+                                    -finalXOffset*1.25f,
+                                    0.4f,
+                                    -finalZOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalZOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos - finalXOffset,
+                                    finalZOffset*1.25f,
+                                    0.4f,
+                                    -finalXOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalZOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos + finalXOffset,
+                                    -finalZOffset*1.25f,
+                                    0.4f,
+                                    finalXOffset*1.25f);
+
+
+                        }, 50*i, TimeUnit.MILLISECONDS);
+                    }
+                    break;
+                case DOWN:
+                    for(int i = 0 ; i < 21 ; i++){
+
+                        double finalXpos = 0.5;
+                        double finalYpos = 0.7;
+                        double finalZpos = 0.5;
+
+                        double finalZOffset = i/100f; // go from 0 to 0.2
+                        double finalXOffset = Math.sqrt((20.1*20.1)-(i*i))/100f; // go from 0.2 to 0
+
+
+                        ClientUtils.runLater(() -> {
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalZOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos + finalXOffset,
+                                    finalZOffset*1.25f,
+                                    0,
+                                    finalXOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalZOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos - finalXOffset,
+                                    -finalZOffset*1.25f,
+                                    0,
+                                    -finalXOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalXOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos - finalZOffset,
+                                    finalXOffset*1.25f,
+                                    0,
+                                    -finalZOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalXOffset,
+                                    worldPosition.getY() + finalYpos,
+                                    worldPosition.getZ() + finalZpos + finalZOffset,
+                                    -finalXOffset*1.25f,
+                                    0,
+                                    finalZOffset*1.25f);
+
+
+                        }, 50*i, TimeUnit.MILLISECONDS);
+                    }
+                    break;
+                case SOUTH:
+                    for(int i = 0 ; i < 21 ; i++){
+
+                        double finalXpos = 0.5;
+                        double finalYpos = 0.5;
+                        double finalZpos = 0.3;
+
+                        double finalZOffset = i/100f; // go from 0 to 0.2
+                        double finalXOffset = Math.sqrt((20.1*20.1)-(i*i))/100f; // go from 0.2 to 0
+
+
+                        ClientUtils.runLater(() -> {
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalZOffset,
+                                    worldPosition.getY() + finalYpos + finalXOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    finalZOffset*1.25f,
+                                    finalXOffset*1.25f,
+                                    0.4f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalZOffset,
+                                    worldPosition.getY() + finalYpos - finalXOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    -finalZOffset*1.25f,
+                                    -finalXOffset*1.25f,
+                                    0.4f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalXOffset,
+                                    worldPosition.getY() + finalYpos - finalZOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    finalXOffset*1.25f,
+                                    -finalZOffset*1.25f,
+                                    0.4f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalXOffset,
+                                    worldPosition.getY() + finalYpos + finalZOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    -finalXOffset*1.25f,
+                                    finalZOffset*1.25f,
+                                    0.4f);
+
+
+                        }, 50*i, TimeUnit.MILLISECONDS);
+                    }
+                    break;
+                case NORTH:
+                    for(int i = 0 ; i < 21 ; i++){
+
+                        double finalXpos = 0.5;
+                        double finalYpos = 0.5;
+                        double finalZpos = 0.7;
+
+                        double finalZOffset = i/100f; // go from 0 to 0.2
+                        double finalXOffset = Math.sqrt((20.1*20.1)-(i*i))/100f; // go from 0.2 to 0
+
+
+                        ClientUtils.runLater(() -> {
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalXOffset,
+                                    worldPosition.getY() + finalYpos + finalZOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    finalXOffset*1.25f,
+                                    finalZOffset*1.25f,
+                                    -0.4f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalXOffset,
+                                    worldPosition.getY() + finalYpos - finalZOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    -finalXOffset*1.25f,
+                                    -finalZOffset*1.25f,
+                                    -0.4f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos + finalZOffset,
+                                    worldPosition.getY() + finalYpos - finalXOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    finalZOffset*1.25f,
+                                    -finalXOffset*1.25f,
+                                    -0.4f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos - finalZOffset,
+                                    worldPosition.getY() + finalYpos + finalXOffset,
+                                    worldPosition.getZ() + finalZpos,
+                                    -finalZOffset*1.25f,
+                                    finalXOffset*1.25f,
+                                    -0.4f);
+
+
+                        }, 50*i, TimeUnit.MILLISECONDS);
+                    }
+                    break;
+                case EAST:
+                    for(int i = 0 ; i < 21 ; i++){
+
+                        double finalXpos = 0.3;
+                        double finalYpos = 0.5;
+                        double finalZpos = 0.5;
+
+                        double finalZOffset = i/100f; // go from 0 to 0.2
+                        double finalXOffset = Math.sqrt((20.1*20.1)-(i*i))/100f; // go from 0.2 to 0
+
+
+                        ClientUtils.runLater(() -> {
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos + finalZOffset,
+                                    worldPosition.getZ() + finalZpos + finalXOffset,
+                                    0.4f,
+                                    finalZOffset*1.25f,
+                                    finalXOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos - finalZOffset,
+                                    worldPosition.getZ() + finalZpos - finalXOffset,
+                                    0.4f,
+                                    -finalZOffset*1.25f,
+                                    -finalXOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos + finalXOffset,
+                                    worldPosition.getZ() + finalZpos - finalZOffset,
+                                    0.4f,
+                                    finalXOffset*1.25f,
+                                    -finalZOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos - finalXOffset,
+                                    worldPosition.getZ() + finalZpos + finalZOffset,
+                                    0.4f,
+                                    -finalXOffset*1.25f,
+                                    finalZOffset*1.25f);
+
+
+                        }, 50*i, TimeUnit.MILLISECONDS);
+                    }
+                    break;
+                case WEST:
+                    for(int i = 0 ; i < 21 ; i++){
+
+                        double finalXpos = 0.7;
+                        double finalYpos = 0.5;
+                        double finalZpos = 0.5;
+
+                        double finalZOffset = i/100f; // go from 0 to 0.2
+                        double finalXOffset = Math.sqrt((20.1*20.1)-(i*i))/100f; // go from 0.2 to 0
+
+
+                        ClientUtils.runLater(() -> {
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos + finalXOffset,
+                                    worldPosition.getZ() + finalZpos + finalZOffset,
+                                    -0.4f,
+                                    finalXOffset*1.25f,
+                                    finalZOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos - finalXOffset,
+                                    worldPosition.getZ() + finalZpos - finalZOffset,
+                                    -0.4f,
+                                    -finalXOffset*1.25f,
+                                    -finalZOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos + finalZOffset,
+                                    worldPosition.getZ() + finalZpos - finalXOffset,
+                                    -0.4f,
+                                    finalZOffset*1.25f,
+                                    -finalXOffset*1.25f);
+
+                            clientLevel.addParticle(CTParticles.BUBBLE_PARTICLES.get(),
+                                    worldPosition.getX() + finalXpos,
+                                    worldPosition.getY() + finalYpos - finalZOffset,
+                                    worldPosition.getZ() + finalZpos + finalXOffset,
+                                    -0.4f,
+                                    -finalZOffset*1.25f,
+                                    finalXOffset*1.25f);
+
+
+                        }, 50*i, TimeUnit.MILLISECONDS);
+                    }
+                    break;
             }
         }
     }
-
 }

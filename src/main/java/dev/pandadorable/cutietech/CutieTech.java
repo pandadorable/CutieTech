@@ -4,17 +4,23 @@ import com.mojang.logging.LogUtils;
 import dev.pandadorable.cutietech.block.CTBlocks;
 import dev.pandadorable.cutietech.block.entity.CTBlockEntites;
 import dev.pandadorable.cutietech.block.entity.client.renderer.block.SprinklerBlockRenderer;
+import dev.pandadorable.cutietech.datagen.*;
 import dev.pandadorable.cutietech.item.CTItems;
 import dev.pandadorable.cutietech.particle.BubbleParticles;
 import dev.pandadorable.cutietech.particle.CTParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -27,12 +33,19 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static dev.pandadorable.cutietech.item.CTItems.*;
 
@@ -81,6 +94,9 @@ public class CutieTech {
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        //Generate data
+        modEventBus.addListener(CutieTech::gatherData);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -124,6 +140,31 @@ public class CutieTech {
         @SubscribeEvent
         public static void registerParticleFactories(RegisterParticleProvidersEvent event){
             event.registerSpriteSet(CTParticles.BUBBLE_PARTICLES.get(), BubbleParticles.Provider::new);
+        }
+    }
+
+    public static void gatherData(GatherDataEvent event) {
+        try {
+            DataGenerator generator = event.getGenerator();
+            PackOutput packOutput = generator.getPackOutput();
+            ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+            CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+
+            generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
+                    List.of(new LootTableProvider.SubProviderEntry(ModBlockLootTableProvider::new, LootContextParamSets.BLOCK)), lookupProvider));
+
+            generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
+
+            BlockTagsProvider blockTagsProvider = new ModBlockTagProvider(packOutput, lookupProvider, existingFileHelper);
+            generator.addProvider(event.includeServer(), blockTagsProvider);
+            generator.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
+
+
+            generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
+            generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
+
+        } catch (RuntimeException e){
+             LOGGER.error("Failed to generate data", e);
         }
     }
 }

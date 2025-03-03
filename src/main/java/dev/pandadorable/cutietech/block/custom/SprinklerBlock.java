@@ -4,31 +4,66 @@ package dev.pandadorable.cutietech.block.custom;
 import com.mojang.serialization.MapCodec;
 import dev.pandadorable.cutietech.block.entity.CTBlockEntites;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class SprinklerBlock extends BaseEntityBlock implements EntityBlock {
+public class SprinklerBlock extends DirectionalBlock implements EntityBlock {
 
     public static BooleanProperty TOGGLE_SPRINKLER = BooleanProperty.create("toggles_sprinkler");
 
     public SprinklerBlock() {
         super(Properties.of().noOcclusion());
-        this.registerDefaultState(this.defaultBlockState().setValue(TOGGLE_SPRINKLER,false));
+        this.registerDefaultState(this.getStateDefinition().any()
+                .setValue(TOGGLE_SPRINKLER,false)
+                .setValue(FACING, Direction.UP)
+        );
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING,context.getClickedFace());
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        switch(state.getValue(FACING)){
+            case EAST:
+                return Block.box(0, 6, 6, 5, 10, 10);
+            case WEST:
+                return Block.box(11, 6, 6, 16, 10, 10);
+
+            case NORTH:
+                return Block.box(6, 6, 11, 10, 10, 16);
+            case SOUTH:
+                return Block.box(6, 6, 0, 10, 10, 5);
+
+            case DOWN:
+                return Block.box(6, 11, 6, 10, 16, 10);
+            default:
+                return Block.box(6, 0, 6, 10, 5, 10);
+        }
+    }
+
+    @Override
+    protected MapCodec<? extends DirectionalBlock> codec() {
         return null;
     }
 
@@ -54,6 +89,7 @@ public class SprinklerBlock extends BaseEntityBlock implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(TOGGLE_SPRINKLER);
+        builder.add(TOGGLE_SPRINKLER)
+                .add(new Property[]{FACING});
     }
 }
